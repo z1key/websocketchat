@@ -1,17 +1,32 @@
 package controller;
 
+import domain.Message;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
 
-/**
- * Created by UserMessage on 01.11.2017.
- */
 @Controller
 public class HomeController {
+    private static final String ROOM = "/topic/all";
 
-    @RequestMapping(value = "/", method = RequestMethod.GET)
-    public String home() {
-        return "index";
+    private SimpMessagingTemplate template;
+
+    @Autowired
+    public HomeController(SimpMessagingTemplate messagingTemplate) {
+        this.template = messagingTemplate;
+    }
+
+    @RequestMapping(value = "/")
+    public ModelAndView home() {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("chatroom");
+        User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        template.convertAndSend(ROOM, new Message("User " + user.getUsername() + " has joined chat!"));
+        modelAndView.addObject("user", user);
+        return modelAndView;
     }
 }

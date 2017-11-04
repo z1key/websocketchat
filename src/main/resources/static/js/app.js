@@ -39,12 +39,16 @@ function sendName() {
     stompClient.send("/app/login", {}, JSON.stringify({'name': $("#name").val()}));
 }
 
+function sendMessage() {
+    stompClient.send("/app/publishAll", {}, JSON.stringify({'content': $("#message").val()}));
+}
+
 function showGreeting(message) {
     $("#greetings").append("<tr><td>" + message + "</td></tr>");
 }
 
 $(function () {
-    $( "#connect" ).click(function() { connect(); });
-    $( "#disconnect" ).click(function() { disconnect(); });
-    $( "#send" ).click(function() { sendName(); });
+    $( "#disconnect" ).click(function() { window.location.href = "/logout"; });
+    $( "#publish" ).click(function() { sendMessage(); });
+    connect();
 });

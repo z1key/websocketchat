@@ -1,27 +1,22 @@
 package config;
 
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.messaging.MessageChannel;
+import static org.springframework.messaging.simp.SimpMessageType.*;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
-import org.springframework.web.socket.config.annotation.AbstractWebSocketMessageBrokerConfigurer;
+import org.springframework.security.config.annotation.web.messaging.MessageSecurityMetadataSourceRegistry;
+import org.springframework.security.config.annotation.web.socket.AbstractSecurityWebSocketMessageBrokerConfigurer;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
-import org.springframework.web.socket.server.support.DefaultHandshakeHandler;
-
-/**
- * Created by UserMessage on 29.10.2017.
- */
 
 @Configuration
 @EnableWebSocketMessageBroker
-public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
+public class WebSocketConfig extends AbstractSecurityWebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/websocketchat").setHandshakeHandler(new DefaultHandshakeHandler()).withSockJS();
+        registry.addEndpoint("/websocketchat").withSockJS();
     }
 
     @Override
@@ -31,10 +26,25 @@ public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
         config.setUserDestinationPrefix("/user");
     }
 
+    @Override
+    protected void configureInbound(MessageSecurityMetadataSourceRegistry messages) {
+        messages
+                .nullDestMatcher().authenticated()
+                .simpTypeMatchers(CONNECT).authenticated()
+                .simpSubscribeDestMatchers("/user/queue/errors").permitAll()
+                .simpDestMatchers("/app/**").hasRole("USER")
+                .simpSubscribeDestMatchers("/user/**", "/topic/*").hasRole("USER")
+                .anyMessage().denyAll();
+    }
+
     @Bean
     public SimpMessagingTemplate messagingTemplate(SimpMessagingTemplate brokerMessagingTemplate) {
         brokerMessagingTemplate.setDefaultDestination("/topic/all");
         return brokerMessagingTemplate;
     }
 
+    @Override
+    protected boolean sameOriginDisabled() {
+        return true;
+    }
 }

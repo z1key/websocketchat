@@ -12,7 +12,7 @@ import org.springframework.stereotype.Controller;
 @Controller
 public class MessageController {
 
-    @MessageMapping("/publish")
+    @MessageMapping("/publishAll")
     @SendTo("/topic/all")
     public Message publish(Message message) {
         return message;
