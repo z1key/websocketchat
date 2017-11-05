@@ -8,9 +8,6 @@ import org.springframework.web.socket.WebSocketSession;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
-/**
- * Created by UserMessage on 29.10.2017.
- */
 @Controller
 public class LogoutController {
 
