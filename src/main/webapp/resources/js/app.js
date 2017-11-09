@@ -18,8 +18,9 @@ function connect() {
     stompClient.connect({}, function (frame) {
         setConnected(true);
         console.log('Connected: ' + frame);
-        stompClient.subscribe('/topic/all', function (greeting) {
-            showGreeting(JSON.parse(greeting.body).content);
+        stompClient.subscribe('/topic/all', function (message) {
+            var content = JSON.parse(message.body);
+            showGreeting(content.sender, content.receivers, content.content);
         });
     }, function (error) {
         alert(error.headers.message)
@@ -40,11 +41,18 @@ function sendName() {
 }
 
 function sendMessage() {
-    stompClient.send("/app/publishAll", {}, JSON.stringify({'content': $("#message").val()}));
+    stompClient.send("/app/publishAll", {}, JSON.stringify({receivers: [],'content': $("#message").val()}));
+    $("#message").val('');
+    $("#message").focus();
 }
 
-function showGreeting(message) {
-    $("#greetings").append("<tr><td>" + message + "</td></tr>");
+function showGreeting(sender, receivers, message) {
+    $("#conversation ul").append(
+    '<li>\
+        <span class="sender">' + sender + ': </span>\
+        <span class="receiver">' + receivers.toString() + '</span>\
+        <span class="message">' + message + '</span>\
+    </li>');
 }
 
 $(function () {

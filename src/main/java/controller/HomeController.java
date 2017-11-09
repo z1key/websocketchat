@@ -25,7 +25,7 @@ public class HomeController {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("chatroom");
         User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        template.convertAndSend(ROOM, new Message("User " + user.getUsername() + " has joined chat!"));
+        template.convertAndSend(ROOM, new Message("System", "User " + user.getUsername() + " has joined chat!"));
         modelAndView.addObject("user", user);
         return modelAndView;
     }

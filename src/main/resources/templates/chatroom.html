@@ -2,11 +2,17 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Hello WebSocket</title>
-    <link th:href="@{webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet" />
+    <link th:href="@{resources/bootstrap/css/bootstrap-reboot.min.css}" rel="stylesheet"/>
+    <link th:href="@{resources/bootstrap/css/bootstrap.min.css}" rel="stylesheet"/>
+    <link th:href="@{resources/bootstrap/css/bootstrap-grid.min.css}" rel="stylesheet"/>
+    <link th:href="@{resources/css/style.css}" rel="stylesheet"/>
     <script th:src="@{webjars/jquery/jquery.min.js}"></script>
     <script th:src="@{webjars/sockjs-client/sockjs.min.js}"></script>
     <script th:src="@{webjars/stomp-websocket/stomp.min.js}"></script>
-    <script th:src="@{js/app.js}"></script>
+    <script th:src="@{resources/js/app.js}"></script>
+    <style>
+
+    </style>
 </head>
 <body>
 <noscript><h2 style="color: #ff0000">Seems your browser doesn't support Javascript! Websocket relies on Javascript being
@@ -14,7 +20,7 @@
     Javascript and reload this page!</h2></noscript>
 <div id="main-content" class="container">
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-12">
             <form class="form-inline">
                 <div class="form-group">
                     <button id="disconnect" class="btn btn-default" type="button">Disconnect</button>
@@ -22,20 +28,26 @@
             </form>
         </div>
     </div>
-    <div class="row" style="height: 500px; overflow-y: auto">
-        <div class="col-md-12">
-            <table id="conversation" class="table table-striped">
-                <tbody id="greetings">
-                </tbody>
-            </table>
+    <div class="row conversation-wrapper">
+        <div class="col col-md-9">
+            <div id="conversation">
+                <ul></ul>
+            </div>
+            <div>
+                <form class="form-inline" onsubmit="sendMessage();return false;">
+                    <div class="form-group">
+                        <input id="message" type="text" autocomplete="off"/>
+                        <button id="publish" class="btn btn-default btn-info" type="button">Send</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col col-md-3">
+            <div class="user-list">
+                <ul id="users"></ul>
+            </div>
         </div>
     </div>
-    <form class="form-inline">
-        <div class="form-group">
-            <input id="message" type="text" />
-            <button id="publish" class="btn btn-default btn-info" type="button">Send</button>
-        </div>
-    </form>
 </div>
 </body>
 </html>
