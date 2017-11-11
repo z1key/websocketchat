@@ -11,7 +11,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class HomeController {
-    private static final String ROOM = "/topic/all";
+
+    private static final String CHANNEL = "/system/joined";
 
     private SimpMessagingTemplate template;
 
@@ -24,9 +25,12 @@ public class HomeController {
     public ModelAndView home() {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("chatroom");
-        User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        template.convertAndSend(ROOM, new Message("System", "User " + user.getUsername() + " has joined chat!"));
-        modelAndView.addObject("user", user);
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof User) {
+            User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            template.convertAndSend(CHANNEL, new Message("System", "User " + user.getUsername() + " has joined chat!"));
+            modelAndView.addObject("user", user);
+        }
         return modelAndView;
     }
 }

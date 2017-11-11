@@ -16,7 +16,7 @@ import java.util.Set;
 @SpringBootApplication
 @EnableAsync(proxyTargetClass = true)
 @EnableCaching(proxyTargetClass = true)
-@ComponentScan(basePackages = {"controller", "config"})
+@ComponentScan(basePackages = {"controller", "config", "component"})
 public class Application {
 
     public static Set<UserMessage> users = new HashSet<>();

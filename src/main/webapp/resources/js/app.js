@@ -22,6 +22,14 @@ function connect() {
             var content = JSON.parse(message.body);
             showGreeting(content.sender, content.receivers, content.content);
         });
+        stompClient.subscribe('/user/queue/errors', function (message) {
+            var content = JSON.parse(message.body);
+            showGreeting(content.sender, content.receivers, content.content);
+        });
+        stompClient.subscribe('/system/joined', function (message) {
+            var content = JSON.parse(message.body);
+            showSystemMessage(content.content);
+        });
     }, function (error) {
         alert(error.headers.message)
     });
@@ -41,22 +49,33 @@ function sendName() {
 }
 
 function sendMessage() {
-    stompClient.send("/app/publishAll", {}, JSON.stringify({receivers: [],'content': $("#message").val()}));
+    stompClient.send("/app/publishAll", {}, JSON.stringify({receivers: [], 'content': $("#message").val()}));
     $("#message").val('');
     $("#message").focus();
 }
 
 function showGreeting(sender, receivers, message) {
     $("#conversation ul").append(
-    '<li>\
-        <span class="sender">' + sender + ': </span>\
+        '<li>\
+            <span class="sender">' + sender + ': </span>\
         <span class="receiver">' + receivers.toString() + '</span>\
         <span class="message">' + message + '</span>\
     </li>');
 }
 
+function showSystemMessage(message) {
+    $("#conversation ul").append(
+        '<li>\
+        <span class="system">' + message + '</span>\
+    </li>');
+}
+
 $(function () {
-    $( "#disconnect" ).click(function() { window.location.href = "/logout"; });
-    $( "#publish" ).click(function() { sendMessage(); });
+    $("#disconnect").click(function () {
+        window.location.href = "/logout";
+    });
+    $("#publish").click(function () {
+        sendMessage();
+    });
     connect();
 });

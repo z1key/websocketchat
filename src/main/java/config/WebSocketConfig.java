@@ -2,13 +2,14 @@ package config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import static org.springframework.messaging.simp.SimpMessageType.*;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.security.config.annotation.web.messaging.MessageSecurityMetadataSourceRegistry;
 import org.springframework.security.config.annotation.web.socket.AbstractSecurityWebSocketMessageBrokerConfigurer;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
+
+import static org.springframework.messaging.simp.SimpMessageType.CONNECT;
 
 @Configuration
 @EnableWebSocketMessageBroker
@@ -21,7 +22,7 @@ public class WebSocketConfig extends AbstractSecurityWebSocketMessageBrokerConfi
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/topic");
+        config.enableSimpleBroker("/topic", "/system");
         config.setApplicationDestinationPrefixes("/app");
         config.setUserDestinationPrefix("/user");
     }
@@ -32,8 +33,8 @@ public class WebSocketConfig extends AbstractSecurityWebSocketMessageBrokerConfi
                 .nullDestMatcher().authenticated()
                 .simpTypeMatchers(CONNECT).authenticated()
                 .simpSubscribeDestMatchers("/user/queue/errors").permitAll()
-                .simpDestMatchers("/app/**").hasRole("USER")
-                .simpSubscribeDestMatchers("/user/**", "/topic/*").hasRole("USER")
+                .simpDestMatchers("/app/publish*").hasRole("USER")
+                .simpSubscribeDestMatchers("/user/**", "/topic/**", "/system/*").hasRole("USER")
                 .anyMessage().denyAll();
     }
 

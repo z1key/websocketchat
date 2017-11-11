@@ -12,6 +12,7 @@ public class Message {
     private String content;
 
     public Message() {
+        this.receivers = new String[0];
     }
 
     /**
@@ -23,6 +24,7 @@ public class Message {
     }
 
     public Message(String sender, String content) {
+        this();
         this.sender = sender;
         this.content = content;
     }
