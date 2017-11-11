@@ -1,8 +1,53 @@
+* {
+    box-sizing: border-box;
+}
+
+html {
+    height: 100%;
+}
 body {
-    padding-top: 40px;
+    height: 100%;
+    padding-top: 30px;
     padding-bottom: 40px;
     background-color: #eee;
 }
+
 ul li {
     list-style: none;
+}
+
+.container {
+    height: calc(100% - 40px);
+}
+
+.main {
+    height: 100%;
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 1px 1px 15px -5px;
+}
+
+.conversation-wrapper {
+    border-right: 1px solid grey;
+}
+#conversation {
+    height: calc(100% - 45px);
+    padding: 10px 0 10px 0;
+}
+.sender {
+    color: darkcyan;
+    font-weight: bold;
+}
+
+.main .form-group {
+    width: 100%;
+}
+
+.main input[type="text"] {
+    width: calc(100% - 85px);
+    margin-right: 10px;
+}
+
+.main button#publish {
+    width: 75px;
 }
