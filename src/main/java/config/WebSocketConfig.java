@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.web.messaging.MessageSecur
 import org.springframework.security.config.annotation.web.socket.AbstractSecurityWebSocketMessageBrokerConfigurer;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
+import util.Channel;
 
 import static org.springframework.messaging.simp.SimpMessageType.CONNECT;
 
@@ -40,7 +41,7 @@ public class WebSocketConfig extends AbstractSecurityWebSocketMessageBrokerConfi
 
     @Bean
     public SimpMessagingTemplate messagingTemplate(SimpMessagingTemplate brokerMessagingTemplate) {
-        brokerMessagingTemplate.setDefaultDestination("/topic/all");
+        brokerMessagingTemplate.setDefaultDestination(Channel.TOPIC_ALL.value());
         return brokerMessagingTemplate;
     }
 

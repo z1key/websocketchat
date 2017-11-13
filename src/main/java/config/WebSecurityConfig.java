@@ -1,5 +1,6 @@
 package config;
 
+import component.CustomLoginSuccessHandler;
 import component.CustomLogoutSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +17,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private CustomLogoutSuccessHandler customLogoutSuccessHandler;
 
+    @Autowired
+    private CustomLoginSuccessHandler customLoginSuccessHandler;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -27,7 +31,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
             .formLogin()
                 .loginPage("/login")
-                .successForwardUrl("/")
+                .successHandler(customLoginSuccessHandler)
             .failureUrl("/login?error")
                 .permitAll()
                 .and()

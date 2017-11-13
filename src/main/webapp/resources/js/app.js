@@ -26,9 +26,9 @@ function connect() {
             var content = JSON.parse(message.body);
             showGreeting(content.sender, content.receivers, content.content);
         });
-        stompClient.subscribe('/system/joined', function (message) {
-            var content = JSON.parse(message.body);
-            showSystemMessage(content.content);
+        stompClient.subscribe('/system/event', function (message) {
+            var message = JSON.parse(message.body);
+            showSystemMessage(message.type + ": " + message.content);
         });
     }, function (error) {
         alert(error.headers.message)
