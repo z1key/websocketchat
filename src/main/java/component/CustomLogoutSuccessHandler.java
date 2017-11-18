@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static config.Application.users;
 import static domain.ServiceMessage.Type.LOGGED_OUT;
 
 @Component
@@ -30,6 +31,7 @@ public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
         if (authentication != null) {
             String user = authentication.getName();
             request.getSession().invalidate();
+            users.remove(user);
             template.convertAndSend(Channel.SYSTEM_EVENT.value(), new ServiceMessage(LOGGED_OUT, user));
         }
         response.sendRedirect("/login");

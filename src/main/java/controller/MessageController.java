@@ -2,6 +2,8 @@ package controller;
 
 import domain.Message;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.security.core.context.SecurityContext;
@@ -9,14 +11,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 
-/**
- * Created by UserMessage on 29.10.2017.
- */
-
 @Controller
 public class MessageController {
 
-    @MessageMapping("/publishAll")
+    private static final Logger logger = LoggerFactory.getLogger(MessageController.class);
+
+    @MessageMapping("/publish")
     @SendTo("/topic/all")
     public Message publish(@RequestBody Message message) {
         SecurityContext securityContext = SecurityContextHolder.getContext();
@@ -24,8 +24,10 @@ public class MessageController {
         if (StringUtils.isNotBlank(name) && StringUtils.isNotBlank(message.getContent())) {
             message.setSender(name);
         } else {
+            logger.info("Unauthorized user tried to send message.");
             return null;
         }
+
         return message;
     }
 }

@@ -4,6 +4,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
+import org.springframework.scheduling.concurrent.ConcurrentTaskScheduler;
+import org.springframework.scheduling.concurrent.DefaultManagedTaskScheduler;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.security.config.annotation.web.messaging.MessageSecurityMetadataSourceRegistry;
 import org.springframework.security.config.annotation.web.socket.AbstractSecurityWebSocketMessageBrokerConfigurer;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
@@ -23,8 +26,8 @@ public class WebSocketConfig extends AbstractSecurityWebSocketMessageBrokerConfi
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/topic", "/system");
-        config.setApplicationDestinationPrefixes("/app");
+        config.enableSimpleBroker("/topic", "/system", "/queue");
+        config.setApplicationDestinationPrefixes("/app", "/user");
         config.setUserDestinationPrefix("/user");
     }
 
@@ -33,7 +36,7 @@ public class WebSocketConfig extends AbstractSecurityWebSocketMessageBrokerConfi
         messages
                 .nullDestMatcher().authenticated()
                 .simpTypeMatchers(CONNECT).authenticated()
-                .simpSubscribeDestMatchers("/user/queue/errors").permitAll()
+                .simpSubscribeDestMatchers(Channel.SYSTEM_ERROR.value()).permitAll()
                 .simpDestMatchers("/app/publish*").hasRole("USER")
                 .simpSubscribeDestMatchers("/user/**", "/topic/**", "/system/*").hasRole("USER")
                 .anyMessage().denyAll();
@@ -49,4 +52,6 @@ public class WebSocketConfig extends AbstractSecurityWebSocketMessageBrokerConfi
     protected boolean sameOriginDisabled() {
         return true;
     }
+
+
 }
