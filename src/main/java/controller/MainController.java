@@ -1,9 +1,10 @@
 package controller;
 
+import component.OnlineUsersPublisher;
+import domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -17,6 +18,9 @@ public class MainController {
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
 
+    @Autowired
+    private OnlineUsersPublisher onlineUsersPublisher;
+
     @RequestMapping(value = "/")
     public String home() {
         return "chatroom";
@@ -27,15 +31,12 @@ public class MainController {
         return "login";
     }
 
-    @SubscribeMapping("/queue/online")
+    @SubscribeMapping("/notifications")
     public void retrieveOnlineUsers(Principal p) {
-        String user = p.getName();
+        User user = new User(p.getName());
         users.add(user);
-        messagingTemplate.convertAndSendToUser(user, "/queue/online", users);
+        onlineUsersPublisher.sendOnlineUsers();
+        messagingTemplate.convertAndSendToUser(user.getName(), "/notifications", user);
     }
 
-    @Scheduled(fixedRate = 10000)
-    public void sendOnlineUsers() {
-        messagingTemplate.convertAndSend("/system/online", users);
-    }
 }

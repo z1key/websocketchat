@@ -1,10 +1,13 @@
 package component;
 
+import domain.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
+
+import static config.Application.users;
 
 @Component
 public class SessionDisconnectedEventListener implements ApplicationListener<SessionDisconnectEvent> {
@@ -13,6 +16,8 @@ public class SessionDisconnectedEventListener implements ApplicationListener<Ses
 
     @Override
     public void onApplicationEvent(SessionDisconnectEvent sessionDisconnectEvent) {
-        logger.info(sessionDisconnectEvent.getUser().getName());
+        User user = new User(sessionDisconnectEvent.getUser());
+        logger.info(user.getName() + " has logged out.");
+        users.remove(user);
     }
 }

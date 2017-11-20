@@ -3,8 +3,9 @@ String.prototype.insertAt=function(index, string) {
 };
 
 var i_am;
+var favorites;
 var stompClient = null;
-var username_pattern = "[%]\u2063";
+var templates = {};
 
 function setConnected(connected) {
     $("#connect").prop("disabled", connected);
@@ -31,8 +32,8 @@ function connect() {
         stompClient.subscribe('/topic/all', function (message) {
             onSubscribe(message, onMessageReceiveCallback);
         });
-        stompClient.subscribe('/user/queue/online', function (message) {
-            onSubscribe(message, onlineUsersCallback);
+        stompClient.subscribe('/user/notifications', function (message) {
+            onSubscribe(message, onStartupCallback);
         });
         stompClient.subscribe('/system/online', function (message) {
             onSubscribe(message, onlineUsersCallback);
@@ -47,14 +48,31 @@ function connect() {
 
 function onMessageReceiveCallback(message) {
     var receiver_html = '';
-    for (var user in message.receivers) {
-        receiver_html.append('<span class="receiver">[' + user + ']</span>')
+    for (var i in message.receivers) {
+        receiver_html += '<span class="receiver">[' + message.receivers[i] + ']</span>';
     }
     $("#conversation ul").append(
         '<li>\
             <span class="sender">' + message.sender + ': </span>' + receiver_html + '\
             <span class="message">' + message.content + '</span>\
     </li>');
+}
+
+function getherTemplates() {
+    var templates = $(".template");
+    $.each(templates, function (index, value) {
+        var name = value.getAttribute('id');
+        var cloned = $(value).clone();
+        cloned.removeAttr('id');
+        cloned.removeClass('template');
+        $(value).remove();
+        templates[name] = cloned;
+    })
+}
+
+function onStartupCallback(message) {
+    i_am = message.name;
+    favorites = message.favorites;
 }
 
 function onSystemEventCallback(message) {
@@ -81,10 +99,16 @@ function onSystemEventCallback(message) {
 }
 
 function onlineUsersCallback(message) {
-
+    var users = message.sort();
+    var $container = $('div#all ul');
+    $container.empty();
+    for (var i in users) {
+        userLogged(users[i]);
+    }
 }
+
 function userAlreadyExists(user) {
-    var $container = $('ul#users');
+    var $container = $('div#all ul');
     return $container.contents().filter(function () {
             return $(this).text() === user;
         }).length != 0;
@@ -92,12 +116,12 @@ function userAlreadyExists(user) {
 
 function userLogged(user) {
     if (!userAlreadyExists(user)) {
-        $('ul#users').append('<li>' + user + '</li>')
+        $('div#all ul').append('<li>' + user + '</li>')
     }
 }
 function userLogout(user) {
     if (userAlreadyExists(user)) {
-        $('ul#users').contents().filter(function () {
+        $('div#all ul').contents().filter(function () {
             return $(this).text() === user;
         }).remove();
     }
@@ -138,25 +162,30 @@ function showSystemMessage(message) {
     </li>');
 }
 function addRecipient(user_item) {
+    var username_pattern = "[%]\u2063";
     var user_name = $(user_item).text();
     var input = $("#message");
     var input_content = $("#message").val();
     var last_username_pos = input_content.indexOf("\u2063");
-    var is_user_already_added = input_content.indexOf(user_name) != -1;
+    var value = username_pattern.replace("%", user_name);
+    var is_user_already_added = input_content.indexOf(value.substring(0, value.length - 1)) != -1;
+
     if (!is_user_already_added) {
-        input.val(input_content.insertAt(last_username_pos, username_pattern.replace("%", user_name)));
+        input.val(input_content.insertAt(last_username_pos, value));
     }
 }
 
 $(function () {
+    getherTemplates();
     $("#disconnect").click(function () {
         window.location.href = "/logout";
     });
     $("#publish").click(function () {
         sendMessage();
     });
-    $("ul#users").on('click', 'li', function () {
+    $(".container").on('click', '#all ul li, #fav ul li, span.sender', function () {
         addRecipient(this);
+        $("#message").focus();
     });
     connect();
 });

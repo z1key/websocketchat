@@ -58,13 +58,26 @@ ul li {
     overflow-y: auto;
 }
 
-ul#users {
-    padding: 0;
+#all ul, #fav ul {
+    padding: 0 1em 0 1em;
     margin: 0;
 }
-ul#users li {
+#all ul li, #fav ul li {
     cursor: pointer;
     border-bottom: 1px solid lightgrey;
     font-weight: bold;
     color: darkred;
+}
+
+.nav-tabs {
+    padding: 10px 10px 0 10px;
+}
+
+.nav-tabs .nav-item {
+    width: 50%;
+    text-align: center;
+}
+
+span.sender {
+    cursor: pointer;
 }

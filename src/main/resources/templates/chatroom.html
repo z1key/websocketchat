@@ -1,18 +1,15 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
+<head th:replace="fragments/common :: common-header(~{::title},~{::link},~{::script})">
     <title>Hello WebSocket</title>
-    <link th:href="@{resources/bootstrap/css/bootstrap-reboot.min.css}" rel="stylesheet"/>
-    <link th:href="@{resources/bootstrap/css/bootstrap.min.css}" rel="stylesheet"/>
-    <link th:href="@{resources/bootstrap/css/bootstrap-grid.min.css}" rel="stylesheet"/>
-    <link th:href="@{resources/css/style.css}" rel="stylesheet"/>
-    <script th:src="@{webjars/jquery/jquery.min.js}"></script>
+
+    <link th:href="@{resources/tether/css/tether.css}" rel="stylesheet"/>
+    <link th:href="@{resources/tether/css/tether-theme-basic.css}" rel="stylesheet"/>
+
+    <script th:src="@{resources/tether/js/tether.min.js}"></script>
+    <script th:src="@{resources/bootstrap/js/bootstrap.min.js}"></script>
     <script th:src="@{webjars/sockjs-client/sockjs.min.js}"></script>
     <script th:src="@{webjars/stomp-websocket/stomp.min.js}"></script>
-    <script th:src="@{resources/js/app.js}"></script>
-    <style>
-
-    </style>
 </head>
 <body>
 <noscript><h2 style="color: #ff0000">Seems your browser doesn't support Javascript! Websocket relies on Javascript being
@@ -31,7 +28,13 @@
     <div class="row main">
         <div class="col col-md-9 conversation-wrapper">
             <div id="conversation">
-                <ul></ul>
+                <ul>
+                    <li id="message-item" class="template">
+                        <span class="sender-wrap"><span class="sender">{{0}}</span>: </span>
+                        <span class="receiver">{{1}}</span>
+                        <span class="message">{{2}}</span>
+                    </li>
+                </ul>
             </div>
             <div>
                 <form class="form-inline" onsubmit="sendMessage();return false;">
@@ -42,11 +45,7 @@
                 </form>
             </div>
         </div>
-        <div class="col col-md-3">
-            <div class="user-list">
-                <ul id="users">
-                </ul>
-            </div>
+        <div class="col col-md-3" style="padding: 0" th:include="fragments/user-bar::root">
         </div>
     </div>
 </div>

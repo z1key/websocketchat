@@ -24,7 +24,6 @@ public class MessageController {
         if (StringUtils.isNotBlank(name) && StringUtils.isNotBlank(message.getContent())) {
             message.setSender(name);
         } else {
-            logger.info("Unauthorized user tried to send message.");
             return null;
         }
 
