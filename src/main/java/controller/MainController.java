@@ -38,5 +38,4 @@ public class MainController {
         onlineUsersPublisher.sendOnlineUsers();
         messagingTemplate.convertAndSendToUser(user.getName(), "/notifications", user);
     }
-
 }

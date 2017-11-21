@@ -19,7 +19,7 @@ import java.util.Properties;
 
 @Configuration
 @EnableTransactionManagement
-@EnableJpaRepositories(basePackages = "domain")
+@EnableJpaRepositories(basePackages = {"domain", "repository"})
 public class JpaConfig implements TransactionManagementConfigurer {
 
     @Value("${dataSource.url}")

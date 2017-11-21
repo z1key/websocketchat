@@ -3,6 +3,7 @@ package domain;
 
 import javax.persistence.*;
 import java.security.Principal;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -12,10 +13,18 @@ import java.util.Set;
 public class User implements Principal {
 
     @Id
+    @Column
+    @GeneratedValue
     private long id;
 
     @Column
     private String name;
+
+    @Column(nullable = false)
+    private String password;
+
+    @Column
+    private Date lastVisit;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
     private transient Set<User> favorites;
@@ -29,9 +38,9 @@ public class User implements Principal {
         this.name = name;
     }
 
-    public User(Principal principal) {
-        this();
-        this.name = principal.getName();
+    public User(String name, String password) {
+        this(name);
+        this.password = password;
     }
 
     public long getId() {
@@ -51,12 +60,28 @@ public class User implements Principal {
         this.name = name;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public Set<User> getFavorites() {
         return favorites;
     }
 
     public void setFavorites(Set<User> favorites) {
         this.favorites = favorites;
+    }
+
+    public Date getLastVisit() {
+        return lastVisit;
+    }
+
+    public void setLastVisit(Date lastVisit) {
+        this.lastVisit = lastVisit;
     }
 
     @Override

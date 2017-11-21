@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments/common :: common-header(~{::title},~{},~{})">
+    <title>Signup</title>
+</head>
+<body>
+<div id="main-content" class="container">
+    <form method="post" th:action="@{/register}" th:object="${signupForm}" class="form-narrow"
+          th:fragment="signupForm">
+        <!--/* Show general error task when form contains errors */-->
+        <th:block th:if="${#fields.hasErrors('${signupForm.*}')}">
+            <div th:replace="fragments/alert :: alert (type='danger', message= #{validate.form.errors})">Alert</div>
+        </th:block>
+        <fieldset>
+            <legend th:text="#{dialog.signup.please}">Please Sign Up</legend>
+
+            <div class="form-group row" th:classappend="${#fields.hasErrors('login')}? 'has-danger'">
+                <label for="login" class="col-sm-4 form-control-label" th:text="#{label.login}">Login</label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control"
+                           th:classappend="${#fields.hasErrors('login')}? 'form-control-danger'" id="login"
+                           placeholder="Login"
+                           th:field="*{login}"/>
+                    <span class="form-control-feedback" th:if="${#fields.hasErrors('login')}" th:errors="*{login}">Incorrect Login</span>
+                </div>
+            </div>
+            <div class="form-group row" th:classappend="${#fields.hasErrors('password')}? 'has-danger'">
+                <label for="password" class="col-sm-4 form-control-label" th:text="#{label.password}">Password</label>
+                <div class="col-sm-8">
+                    <input type="password" class="form-control" id="password"
+                           th:classappend="${#fields.hasErrors('password')}? 'form-control-danger'" placeholder="Password"
+                           th:field="*{password}"/>
+                    <span class="form-control-feedback" th:if="${#fields.hasErrors('password')}"
+                          th:errors="*{password}">Incorrect password</span>
+                </div>
+            </div>
+            <div class="form-group row" th:classappend="${#fields.hasErrors('verifyPassword')}? 'has-danger'">
+                <label for="verifyPassword" class="col-sm-4 form-control-label" th:text="#{label.password.verify}">Retry
+                    password</label>
+                <div class="col-sm-8">
+                    <input type="password" class="form-control" id="verifyPassword"
+                           th:classappend="${#fields.hasErrors('verifyPassword')}? 'form-control-danger'" placeholder="Password"
+                           th:field="*{verifyPassword}"/>
+                    <span class="form-control-feedback" th:if="${#fields.hasErrors('verifyPassword')}"
+                          th:errors="*{verifyPassword}"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-lg-offset-2 col-lg-8">
+                    <button type="submit" class="btn btn-secondary" th:text="#{button.signup}">Sign up</button>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+</div>
+</body>
+</html>

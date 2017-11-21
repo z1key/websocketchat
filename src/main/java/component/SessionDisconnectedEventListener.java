@@ -16,7 +16,7 @@ public class SessionDisconnectedEventListener implements ApplicationListener<Ses
 
     @Override
     public void onApplicationEvent(SessionDisconnectEvent sessionDisconnectEvent) {
-        User user = new User(sessionDisconnectEvent.getUser());
+        User user = new User(sessionDisconnectEvent.getUser().getName());
         logger.info(user.getName() + " has logged out.");
         users.remove(user);
     }

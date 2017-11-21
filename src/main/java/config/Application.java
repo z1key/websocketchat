@@ -13,7 +13,7 @@ import java.util.Set;
 @EnableScheduling
 //@EnableAsync(proxyTargetClass = true)
 //@EnableCaching(proxyTargetClass = true)
-@ComponentScan(basePackages = {"controller", "config", "component"})
+@ComponentScan(basePackages = {"controller", "config", "component", "service"})
 public class Application {
 
     public static final Set<User> users = Sets.newConcurrentHashSet();
