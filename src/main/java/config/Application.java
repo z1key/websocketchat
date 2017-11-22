@@ -11,8 +11,6 @@ import java.util.Set;
 
 @SpringBootApplication(exclude={org.springframework.boot.autoconfigure.thymeleaf.ThymeleafAutoConfiguration.class})
 @EnableScheduling
-//@EnableAsync(proxyTargetClass = true)
-//@EnableCaching(proxyTargetClass = true)
 @ComponentScan(basePackages = {"controller", "config", "component", "service"})
 public class Application {
 
